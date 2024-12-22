@@ -32,7 +32,7 @@ export const analyzeImage = async (imageData: string): Promise<Recipe[]> => {
   // Remove the data:image/[type];base64, prefix
   const base64Image = imageData.split(',')[1];
 
-  const model = geminiApi.getGenerativeModel({ model: "gemini-pro-vision" });
+  const model = geminiApi.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const prompt = `Analyze this image of ingredients and suggest recipes that can be made using them. 
   For each recipe, provide:
