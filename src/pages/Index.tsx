@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ImageUpload from "@/components/ImageUpload";
 import RecipeList from "@/components/RecipeList";
 import RecipeDetail from "@/components/RecipeDetail";
-import { useToast } from "@/components/ui/use-toast";
 import { Card } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
+import { initGemini, analyzeImage } from "@/utils/gemini";
 
 export interface Recipe {
   title: string;
@@ -20,49 +21,31 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  useEffect(() => {
+    // Initialize Gemini API with the key from Supabase secrets
+    const geminiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    if (geminiKey) {
+      initGemini(geminiKey);
+    }
+  }, []);
+
   const handleImageAnalysis = async (imageUrl: string) => {
     setIsLoading(true);
     try {
-      // In a real implementation, we would send the image to Gemini API
-      // For now, we'll simulate the response
-      const mockRecipes: Recipe[] = [
-        {
-          title: "Creamy Pasta Primavera",
-          ingredients: ["Pasta", "Broccoli", "Carrots", "Cream", "Garlic"],
-          instructions: [
-            "Boil pasta according to package instructions",
-            "Sauté vegetables in olive oil",
-            "Combine with cream sauce",
-          ],
-          imageUrl: "https://images.unsplash.com/photo-1473093226795-af9932fe5856",
-          cookingTime: "30 mins",
-          servings: 4,
-        },
-        {
-          title: "Garden Fresh Salad",
-          ingredients: ["Lettuce", "Tomatoes", "Cucumber", "Olive Oil", "Vinegar"],
-          instructions: [
-            "Wash and chop vegetables",
-            "Combine in a large bowl",
-            "Dress with olive oil and vinegar",
-          ],
-          imageUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
-          cookingTime: "15 mins",
-          servings: 2,
-        },
-      ];
-      
-      setRecipes(mockRecipes);
+      const suggestions = await analyzeImage(imageUrl);
+      setRecipes(suggestions);
       toast({
         title: "Analysis Complete",
         description: "Here are some recipes you can make!",
       });
     } catch (error) {
+      console.error('Error analyzing image:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to analyze image. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to analyze image. Please try again.",
       });
+      setRecipes([]);
     } finally {
       setIsLoading(false);
     }
