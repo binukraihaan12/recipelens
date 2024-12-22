@@ -1,15 +1,32 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Recipe } from "@/pages/Index";
+import { supabase } from "@/integrations/supabase/client";
 
 let geminiApi: GoogleGenerativeAI | null = null;
 
-export const initGemini = (apiKey: string) => {
-  geminiApi = new GoogleGenerativeAI(apiKey);
+export const initGemini = async () => {
+  try {
+    const { data, error } = await supabase.functions.invoke('get-secret', {
+      body: { secretName: 'GEMINI_API_KEY' }
+    });
+    
+    if (error) throw error;
+    if (!data?.secret) throw new Error('GEMINI_API_KEY not found');
+    
+    geminiApi = new GoogleGenerativeAI(data.secret);
+    console.log('Gemini API initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize Gemini API:', error);
+    throw error;
+  }
 };
 
 export const analyzeImage = async (imageData: string): Promise<Recipe[]> => {
   if (!geminiApi) {
-    throw new Error("Gemini API not initialized");
+    await initGemini();
+    if (!geminiApi) {
+      throw new Error("Gemini API not initialized");
+    }
   }
 
   // Remove the data:image/[type];base64, prefix

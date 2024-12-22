@@ -22,12 +22,22 @@ const Index = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Initialize Gemini API with the key from Supabase secrets
-    const geminiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    if (geminiKey) {
-      initGemini(geminiKey);
-    }
-  }, []);
+    const init = async () => {
+      try {
+        await initGemini();
+        console.log('Gemini API initialized on page load');
+      } catch (error) {
+        console.error('Error initializing Gemini API:', error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to initialize AI service. Please try again later.",
+        });
+      }
+    };
+    
+    init();
+  }, [toast]);
 
   const handleImageAnalysis = async (imageUrl: string) => {
     setIsLoading(true);
