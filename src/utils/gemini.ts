@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { Recipe } from "@/pages/Index";
 
 let geminiApi: GoogleGenerativeAI | null = null;
 
