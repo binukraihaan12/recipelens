@@ -62,8 +62,11 @@ export const analyzeImage = async (imageData: string): Promise<Recipe[]> => {
     console.log('Gemini API Response:', text);
 
     try {
-      // Try to parse the response as JSON
-      const recipes = JSON.parse(text);
+      // Clean up the response text by removing markdown code block syntax
+      const cleanedText = text.replace(/```json\n|\n```/g, '');
+      
+      // Try to parse the cleaned response as JSON
+      const recipes = JSON.parse(cleanedText);
       return recipes.map((recipe: any) => ({
         ...recipe,
         imageUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd" // Placeholder image
