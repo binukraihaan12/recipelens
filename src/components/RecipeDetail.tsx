@@ -1,7 +1,9 @@
 import { Recipe } from "@/pages/Index";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Clock, Users } from "lucide-react";
+import { ArrowLeft, Clock, Users, BookmarkPlus } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 interface RecipeDetailProps {
   recipe: Recipe;
@@ -9,17 +11,60 @@ interface RecipeDetailProps {
 }
 
 const RecipeDetail = ({ recipe, onBack }: RecipeDetailProps) => {
+  const { toast } = useToast();
+
+  const handleSave = async () => {
+    try {
+      const { error } = await supabase
+        .from('saved_recipes')
+        .insert([
+          {
+            title: recipe.title,
+            ingredients: recipe.ingredients,
+            instructions: recipe.instructions,
+            image_url: recipe.imageUrl,
+            cooking_time: recipe.cookingTime,
+            servings: recipe.servings,
+          }
+        ]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Recipe saved successfully!",
+      });
+    } catch (error) {
+      console.error('Error saving recipe:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to save recipe. Please try again.",
+      });
+    }
+  };
+
   return (
     <Card className="p-6">
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={onBack}
-        className="mb-4"
-      >
-        <ArrowLeft className="h-4 w-4 mr-2" />
-        Back to recipes
-      </Button>
+      <div className="flex justify-between items-center mb-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onBack}
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to recipes
+        </Button>
+        
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleSave}
+        >
+          <BookmarkPlus className="h-4 w-4 mr-2" />
+          Save Recipe
+        </Button>
+      </div>
 
       <img
         src={recipe.imageUrl}
