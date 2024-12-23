@@ -3,8 +3,11 @@ import ImageUpload from "@/components/ImageUpload";
 import RecipeList from "@/components/RecipeList";
 import RecipeDetail from "@/components/RecipeDetail";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { initGemini, analyzeImage } from "@/utils/gemini";
+import { supabase } from "@/integrations/supabase/client";
+import { LogOut } from "lucide-react";
 
 export interface Recipe {
   title: string;
@@ -19,7 +22,20 @@ const Index = () => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUserEmail(session?.user?.email ?? null);
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUserEmail(session?.user?.email ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     const init = async () => {
@@ -61,12 +77,38 @@ const Index = () => {
     }
   };
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out.",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-serif text-center mb-8 text-[#2D3436]">
-          AI Recipe Generator
-        </h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-serif text-[#2D3436]">
+            AI Recipe Generator
+          </h1>
+          <div className="flex items-center gap-4">
+            {userEmail && (
+              <span className="text-sm text-gray-600">
+                {userEmail}
+              </span>
+            )}
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              className="flex items-center gap-2"
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </Button>
+          </div>
+        </div>
+        
         <p className="text-center mb-12 text-gray-600">
           Upload a photo of your ingredients and let AI suggest delicious recipes!
         </p>
