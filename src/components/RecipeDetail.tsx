@@ -15,18 +15,21 @@ const RecipeDetail = ({ recipe, onBack }: RecipeDetailProps) => {
 
   const handleSave = async () => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) throw new Error("User not authenticated");
+
       const { error } = await supabase
         .from('saved_recipes')
-        .insert([
-          {
-            title: recipe.title,
-            ingredients: recipe.ingredients,
-            instructions: recipe.instructions,
-            image_url: recipe.imageUrl,
-            cooking_time: recipe.cookingTime,
-            servings: recipe.servings,
-          }
-        ]);
+        .insert({
+          user_id: user.id,
+          title: recipe.title,
+          ingredients: recipe.ingredients,
+          instructions: recipe.instructions,
+          image_url: recipe.imageUrl,
+          cooking_time: recipe.cookingTime,
+          servings: recipe.servings,
+        });
 
       if (error) throw error;
 

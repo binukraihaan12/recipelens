@@ -26,7 +26,15 @@ const SavedRecipes = () => {
         throw error;
       }
       
-      return data as Recipe[];
+      // Map the database fields to match our Recipe type
+      return data.map(recipe => ({
+        title: recipe.title,
+        ingredients: recipe.ingredients,
+        instructions: recipe.instructions,
+        imageUrl: recipe.image_url,
+        cookingTime: recipe.cooking_time,
+        servings: recipe.servings
+      })) as Recipe[];
     },
   });
 
