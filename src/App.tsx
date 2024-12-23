@@ -5,7 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import Index from "./pages/Index";
+import Landing from "./pages/Landing";
+import App from "./app/App";
 import Auth from "./pages/Auth";
 import SavedRecipes from "./pages/SavedRecipes";
 
@@ -37,19 +38,20 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-const App = () => (
+const Root = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<Landing />} />
           <Route path="/auth" element={<Auth />} />
           <Route
-            path="/"
+            path="/app"
             element={
               <ProtectedRoute>
-                <Index />
+                <App />
               </ProtectedRoute>
             }
           />
@@ -67,4 +69,4 @@ const App = () => (
   </QueryClientProvider>
 );
 
-export default App;
+export default Root;
