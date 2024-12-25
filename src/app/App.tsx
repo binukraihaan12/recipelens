@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { initGemini, analyzeImage } from "@/utils/gemini";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut } from "lucide-react";
+import { LogOut, Bookmark } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export interface Recipe {
   title: string;
@@ -87,28 +88,39 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-serif text-[#2D3436]">
-            AI Recipe Generator
-          </h1>
-          <div className="flex items-center gap-4">
-            {userEmail && (
-              <span className="text-sm text-gray-600">
-                {userEmail}
-              </span>
-            )}
-            <Button
-              variant="outline"
-              onClick={handleLogout}
-              className="flex items-center gap-2"
-            >
-              <LogOut className="w-4 h-4" />
-              Logout
-            </Button>
+      <nav className="border-b bg-white">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-serif text-[#2D3436]">
+              AI Recipe Generator
+            </h1>
+            <div className="flex items-center gap-4">
+              <Link 
+                to="/saved"
+                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                <Bookmark className="w-5 h-5" />
+                <span>Saved Recipes</span>
+              </Link>
+              {userEmail && (
+                <span className="text-sm text-gray-600">
+                  {userEmail}
+                </span>
+              )}
+              <Button
+                variant="outline"
+                onClick={handleLogout}
+                className="flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
-        
+      </nav>
+
+      <div className="container mx-auto px-4 py-8">
         <p className="text-center mb-12 text-gray-600">
           Upload a photo of your ingredients and let AI suggest delicious recipes!
         </p>
