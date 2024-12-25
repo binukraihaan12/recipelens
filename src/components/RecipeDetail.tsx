@@ -8,9 +8,10 @@ import { useToast } from "@/components/ui/use-toast";
 interface RecipeDetailProps {
   recipe: Recipe;
   onBack: () => void;
+  hideActions?: boolean;
 }
 
-const RecipeDetail = ({ recipe, onBack }: RecipeDetailProps) => {
+const RecipeDetail = ({ recipe, onBack, hideActions = false }: RecipeDetailProps) => {
   const { toast } = useToast();
 
   const handleSave = async () => {
@@ -59,14 +60,16 @@ const RecipeDetail = ({ recipe, onBack }: RecipeDetailProps) => {
           Back to recipes
         </Button>
         
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleSave}
-        >
-          <BookmarkPlus className="h-4 w-4 mr-2" />
-          Save Recipe
-        </Button>
+        {!hideActions && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleSave}
+          >
+            <BookmarkPlus className="h-4 w-4 mr-2" />
+            Save Recipe
+          </Button>
+        )}
       </div>
 
       <img
