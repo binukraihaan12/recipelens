@@ -54,6 +54,7 @@ const SavedRecipes = () => {
             <RecipeDetail 
               recipe={selectedRecipe} 
               onBack={() => setSelectedRecipe(null)} 
+              hideActions={true} // Add this prop to hide the save button
             />
           ) : (
             recipes && recipes.length > 0 ? (
