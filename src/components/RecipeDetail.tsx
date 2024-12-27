@@ -26,10 +26,9 @@ const RecipeDetail = ({ recipe, onBack, hideActions = false }: RecipeDetailProps
           .from('saved_recipes')
           .select('id')
           .eq('user_id', user.id)
-          .eq('title', recipe.title)
-          .single();
+          .eq('title', recipe.title);
 
-        setIsSaved(!!data);
+        setIsSaved(data && data.length > 0);
       } catch (error) {
         console.error('Error checking saved recipe:', error);
       }
