@@ -1,9 +1,10 @@
 import { Recipe } from "@/pages/Index";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Clock, Users, BookmarkPlus } from "lucide-react";
+import { ArrowLeft, Clock, Users, BookmarkPlus, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { useEffect, useState } from "react";
 
 interface RecipeDetailProps {
   recipe: Recipe;
@@ -13,6 +14,29 @@ interface RecipeDetailProps {
 
 const RecipeDetail = ({ recipe, onBack, hideActions = false }: RecipeDetailProps) => {
   const { toast } = useToast();
+  const [isSaved, setIsSaved] = useState(false);
+
+  useEffect(() => {
+    const checkIfRecipeIsSaved = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data } = await supabase
+          .from('saved_recipes')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('title', recipe.title)
+          .single();
+
+        setIsSaved(!!data);
+      } catch (error) {
+        console.error('Error checking saved recipe:', error);
+      }
+    };
+
+    checkIfRecipeIsSaved();
+  }, [recipe.title]);
 
   const handleSave = async () => {
     try {
@@ -34,6 +58,7 @@ const RecipeDetail = ({ recipe, onBack, hideActions = false }: RecipeDetailProps
 
       if (error) throw error;
 
+      setIsSaved(true);
       toast({
         title: "Success",
         description: "Recipe saved successfully!",
@@ -65,9 +90,19 @@ const RecipeDetail = ({ recipe, onBack, hideActions = false }: RecipeDetailProps
             variant="outline"
             size="sm"
             onClick={handleSave}
+            disabled={isSaved}
           >
-            <BookmarkPlus className="h-4 w-4 mr-2" />
-            Save Recipe
+            {isSaved ? (
+              <>
+                <Check className="h-4 w-4 mr-2" />
+                Recipe Saved
+              </>
+            ) : (
+              <>
+                <BookmarkPlus className="h-4 w-4 mr-2" />
+                Save Recipe
+              </>
+            )}
           </Button>
         )}
       </div>
