@@ -6,7 +6,7 @@ import RecipeDetail from "@/components/RecipeDetail";
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
-import { LogOut, Search } from "lucide-react";
+import { LogOut, ChefHat } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const SavedRecipes = () => {
@@ -78,7 +78,7 @@ const SavedRecipes = () => {
                 to="/app"
                 className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
               >
-                <Search className="w-5 h-5" />
+                <ChefHat className="w-5 h-5" />
                 <span>Dish Detective</span>
               </Link>
               {userEmail && (
