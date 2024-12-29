@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { initGemini, analyzeImage } from "@/utils/gemini";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Bookmark, Menu, X } from "lucide-react";
+import { LogOut, Bookmark, Menu } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -16,6 +16,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Dialog,
+  DialogContent,
+} from "@/components/ui/dialog";
 
 export interface Recipe {
   title: string;
@@ -31,7 +35,6 @@ const App = () => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -166,14 +169,19 @@ const App = () => {
           </Card>
           
           <div className="space-y-6">
-            {recipes.length > 0 && !selectedRecipe && (
+            {recipes.length > 0 && (
               <RecipeList recipes={recipes} onSelectRecipe={setSelectedRecipe} />
-            )}
-            {selectedRecipe && (
-              <RecipeDetail recipe={selectedRecipe} onBack={() => setSelectedRecipe(null)} />
             )}
           </div>
         </div>
+
+        <Dialog open={selectedRecipe !== null} onOpenChange={(open) => !open && setSelectedRecipe(null)}>
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            {selectedRecipe && (
+              <RecipeDetail recipe={selectedRecipe} onBack={() => setSelectedRecipe(null)} />
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

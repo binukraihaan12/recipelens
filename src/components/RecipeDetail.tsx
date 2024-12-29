@@ -1,6 +1,5 @@
 import { Recipe } from "@/pages/Index";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { ArrowLeft, Clock, Users, BookmarkPlus, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -73,8 +72,8 @@ const RecipeDetail = ({ recipe, onBack, hideActions = false }: RecipeDetailProps
   };
 
   return (
-    <Card className="p-6">
-      <div className="flex justify-between items-center mb-4">
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
         <Button
           variant="ghost"
           size="sm"
@@ -109,12 +108,12 @@ const RecipeDetail = ({ recipe, onBack, hideActions = false }: RecipeDetailProps
       <img
         src={recipe.imageUrl}
         alt={recipe.title}
-        className="w-full h-48 object-cover rounded-lg mb-6"
+        className="w-full h-48 object-cover rounded-lg"
       />
 
-      <h2 className="text-2xl font-serif mb-4">{recipe.title}</h2>
+      <h2 className="text-2xl font-serif">{recipe.title}</h2>
 
-      <div className="flex space-x-4 mb-6 text-gray-600">
+      <div className="flex space-x-4 text-gray-600">
         <div className="flex items-center space-x-1">
           <Clock className="h-4 w-4" />
           <span>{recipe.cookingTime}</span>
@@ -144,7 +143,7 @@ const RecipeDetail = ({ recipe, onBack, hideActions = false }: RecipeDetailProps
           </ol>
         </div>
       </div>
-    </Card>
+    </div>
   );
 };
 
