@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/toaster";
 import ImageUpload from "@/components/ImageUpload";
 import RecipeList from "@/components/RecipeList";
 import RecipeDetail from "@/components/RecipeDetail";
@@ -176,7 +177,7 @@ const App = () => {
         </div>
 
         <Dialog open={selectedRecipe !== null} onOpenChange={(open) => !open && setSelectedRecipe(null)}>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-[95vw] md:max-w-[85vw] lg:max-w-[75vw] max-h-[90vh] overflow-y-auto p-8">
             {selectedRecipe && (
               <RecipeDetail recipe={selectedRecipe} onBack={() => setSelectedRecipe(null)} />
             )}
