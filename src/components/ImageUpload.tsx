@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
-import { Upload, Image as ImageIcon } from "lucide-react";
+import { Upload, Utensils, Loader } from "lucide-react";
 
 interface ImageUploadProps {
   onImageUpload: (imageUrl: string) => void;
@@ -25,7 +25,7 @@ const ImageUpload = ({ onImageUpload, isLoading }: ImageUploadProps) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'image/*': ['.jpeg', '.jpg', '.png'],
+      "image/*": [".jpeg", ".jpg", ".png"],
     },
     multiple: false,
   });
@@ -41,7 +41,11 @@ const ImageUpload = ({ onImageUpload, isLoading }: ImageUploadProps) => {
       <div
         {...getRootProps()}
         className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors
-          ${isDragActive ? 'border-primary bg-primary/5' : 'border-gray-300 hover:border-primary'}`}
+          ${
+            isDragActive
+              ? "border-primary bg-primary/5"
+              : "border-gray-300 hover:border-primary"
+          }`}
       >
         <input {...getInputProps()} />
         {preview ? (
@@ -51,12 +55,16 @@ const ImageUpload = ({ onImageUpload, isLoading }: ImageUploadProps) => {
               alt="Preview"
               className="max-h-48 mx-auto rounded-lg object-cover"
             />
-            <p className="text-sm text-gray-500">Click or drag to change image</p>
+            <p className="text-sm text-gray-500">
+              Click or drag to change image
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
             <Upload className="mx-auto h-12 w-12 text-gray-400" />
-            <p className="text-gray-600">Drop your image here or click to browse</p>
+            <p className="text-gray-600">
+              Drop your image here or click to browse
+            </p>
             <p className="text-sm text-gray-500">Supports JPG, JPEG, PNG</p>
           </div>
         )}
@@ -65,16 +73,16 @@ const ImageUpload = ({ onImageUpload, isLoading }: ImageUploadProps) => {
       <Button
         onClick={handleGenerate}
         disabled={!preview || isLoading}
-        className="w-full"
+        className="w-full bg-black"
       >
         {isLoading ? (
           <div className="flex items-center space-x-2">
-            <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary border-t-transparent" />
+            <Loader className="animate-spin text-3xl" />
             <span>Analyzing...</span>
           </div>
         ) : (
           <div className="flex items-center space-x-2">
-            <ImageIcon className="h-4 w-4" />
+            <Utensils className="h-4 w-4" />
             <span>Generate Recipes</span>
           </div>
         )}
