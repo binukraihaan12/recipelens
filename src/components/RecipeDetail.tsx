@@ -147,7 +147,7 @@ ${recipe.instructions.map((inst, i) => `${i + 1}. ${inst}`).join("\n")}
   };
 
   return (
-    <div className="space-y-6 p-6 border shadow-lg bg-white rounded-md">
+    <div className="space-y-6 bg-white rounded-md">
       <div className="flex justify-between items-center">
         <Button variant="ghost" size="sm" onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-2" />
